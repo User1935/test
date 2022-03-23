@@ -2,7 +2,7 @@ name: Testing repo
 on: [push, pull_request]
 
 env:
-        WRKDIR: "$HOME/deps"
+        WRKDIR: "/home/runner/work/test/test/deps"
 
 jobs:
         bananas:
@@ -12,7 +12,7 @@ jobs:
                         - name: 'Checkout'
                           uses: actions/checkout@v3
                           with:
-                                ref: main
+                                ref: $GITHUB_REF_NAME
 
                         - name: 'Print Something'
                           run: |
