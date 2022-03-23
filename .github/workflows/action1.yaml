@@ -9,7 +9,7 @@ jobs:
                         - name: 'Checkout'
                           uses: actions/checkout@v3
                           with:
-                                ref: ${GITHUB_REF#refs/heads/User1935/}
+                                ref: main
 
                         - name: 'Print Something'
                           run: |
