@@ -9,10 +9,10 @@ jobs:
                         - name: 'Checkout'
                           uses: actions/checkout@v3
                           with:
-                                  ref: ${GITHUB_REF#refs/heads/}
+                                  ref: ${GITHUB_REF#refs/heads/User1935/}
 
                         - name: 'Print Something'
                           run: |
                                 echo $(cat derd.txt)
-                                echo ${GITHUB_REF#refs/heads/}
+                                echo ${GITHUB_REF#refs/heads/User1935/}
 
