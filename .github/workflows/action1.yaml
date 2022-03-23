@@ -9,8 +9,8 @@ jobs:
                         - name: 'Checkout'
                           uses: actions/checkout@v3
                           with:
-                                  ref: #GITHUB_SHA
+                                  ref: $GITHUB_SHA
 
                         - name: 'Print Something'
-                          run: echo $(derd.txt)
+                          run: echo $(cat derd.txt)
 
