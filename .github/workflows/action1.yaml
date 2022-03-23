@@ -12,11 +12,12 @@ jobs:
                         - name: 'Checkout'
                           uses: actions/checkout@v3
                           with:
-                                ref: $GITHUB_REF_NAME
+                                ref: main
 
                         - name: 'Print Something'
                           run: |
                                 echo $(cat derd.txt)
+                                echo $GITHUB_REF_NAME
                                 echo ${GITHUB_REF#refs/heads/User1935/}
 
                         - name: 'Install Dependencies'
