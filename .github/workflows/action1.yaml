@@ -1,6 +1,9 @@
 name: Testing repo
 on: [push, pull_request]
 
+env:
+        WRKDIR: "$HOME/deps"
+
 jobs:
         bananas:
                 name: 'Checkout'
@@ -19,20 +22,20 @@ jobs:
                         - name: 'Install Dependencies'
                           run: |
                                 sudo apt-get install unzip
-                                mkdir bin
+                                mkdir $WRKDIR
 
                         - name: 'Install Pre-Commit'
-                          working-directory: bin
+                          working-directory: $WRKDIR
                           continue-on-error: true
                           run: pip3 install --no-cache-dir pre-commit
 
                         - name: 'Install Checkov'
-                          working-directory: bin
+                          working-directory: $WRKDIR
                           continue-on-error: true
                           run: pip3 install --no-cache-dir checkov 
 
                         - name: 'Install TerraDocs'
-                          working-directory: bin
+                          working-directory: $WRKDIR
                           continue-on-error: true
                           run: |
                                 curl -L "$(curl -s "https://api.github.com/repos/terraform-docs/terraform-docs/releases"/latest | grep -o -E -m 1 "https://.+?-linux-amd64.tar.gz")" > terraform-docs.tgz \
@@ -40,14 +43,14 @@ jobs:
 
                         
                         - name: 'Install TerraGrunt'
-                          working-directory: bin
+                          working-directory: $WRKDIR
                           continue-on-error: true
                           run: |
                                 curl -L "$(curl -s "https://api.github.com/repos/gruntwork-io/terragrunt/releases/latest" | grep -o -E -m 1 "https://.+?/terragrunt_linux_amd64")" > terragrunt \
                                 && chmod +x terragrunt
 
                         - name: 'Install TerraScan'
-                          working-directory: bin
+                          working-directory: $WRKDIR
                           continue-on-error: true
                           run: |
                                 curl -L "$(curl -s "https://api.github.com/repos/accurics/terrascan/releases/latest" | grep -o -E -m 1 "https://.+?_Linux_x86_64.tar.gz")" > terrascan.tar.gz \
@@ -55,7 +58,7 @@ jobs:
                                 && ./terrascan init
 
                         - name: 'Install TerraformLint'
-                          working-directory: bin
+                          working-directory: $WRKDIR
                           continue-on-error: true
                           run: |
                                 curl -L "$(curl -s "https://api.github.com/repos/terraform-linters/tflint/releases/latest" | grep -o -E -m 1 "https://.+?_linux_amd64.zip")" > tflint.zip \
@@ -63,7 +66,7 @@ jobs:
 
 
                         - name: 'Install TFSec'
-                          working-directory: bin
+                          working-directory: $WRKDIR
                           continue-on-error: true
                           run: |
                                 curl -L "$(curl -s "https://api.github.com/repos/aquasecurity/tfsec/releases/latest" | grep -o -E -m 1 "https://.+?/tfsec-linux-amd64")" > tfsec \
@@ -71,10 +74,10 @@ jobs:
                         
                                                 
                         - name: 'Add to PATH'
-                          working-directory: bin
+                          working-directory: $WRKDIR
                           run: |
-                                #echo "${{ github.workspace }}/bin/terraform-docs" >> $GITHUB_PATH \
-                                export PATH="${PATH}:${{ github.workspace }}/bin/terraform-docs"
+                                echo "$WRKDIR" >> $GITHUB_PATH \
+                                #export PATH="${PATH}:${{ github.workspace }}/$WRKDIR/terraform-docs"
                                 echo "$PATH"
                                 echo $(ls)
 
