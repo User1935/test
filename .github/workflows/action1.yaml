@@ -73,8 +73,9 @@ jobs:
                         - name: 'Add to PATH'
                           working-directory: bin
                           run: |
-                                echo "${{ github.workspace }}/bin/terraform-docs" >> $GITHUB_PATH \
-                                && echo "$PATH"
+                                #echo "${{ github.workspace }}/bin/terraform-docs" >> $GITHUB_PATH \
+                                export PATH="${PATH}:${{ github.workspace }}/bin/terraform-docs"
+                                echo "$PATH"
                                 echo $(ls)
 
                         - name: 'Pre-Commit'
