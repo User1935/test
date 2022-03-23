@@ -71,7 +71,10 @@ jobs:
                         
                                                 
                         - name: 'Add to PATH'
+                          working-directory: bin
                           run: |
-                                echo "${{ github.workspace }}/bin" >> $GITHUB_PATH \
-                                && echo "$PATH" \
-                                && pre-commit run --all-files
+                                echo "$HOME/bin" >> $GITHUB_PATH \
+                                && echo "$PATH"
+
+                        - name: 'Pre-Commit'
+                          run: pre-commit run --all-files
