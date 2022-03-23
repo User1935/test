@@ -73,7 +73,7 @@ jobs:
                         - name: 'Add to PATH'
                           working-directory: bin
                           run: |
-                                echo "$HOME/bin" >> $GITHUB_PATH \
+                                echo "$HOME/bin/terraform-docs" >> $GITHUB_PATH \
                                 && echo "$PATH"
                                 echo $(ls)
 
