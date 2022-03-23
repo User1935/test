@@ -18,7 +18,7 @@ jobs:
 
                         - name: 'Install Dependencies'
                           run: |
-                                apt-get install unzip
+                                sudo apt-get install unzip
                                 mkdir bin
 
                         - name: 'Install Pre-Commit'
