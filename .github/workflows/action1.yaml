@@ -9,10 +9,61 @@ jobs:
                         - name: 'Checkout'
                           uses: actions/checkout@v3
                           with:
-                                  ref: ${GITHUB_REF#refs/heads/User1935/}
+                                ref: ${GITHUB_REF#refs/heads/User1935/}
 
                         - name: 'Print Something'
                           run: |
                                 echo $(cat derd.txt)
                                 echo ${GITHUB_REF#refs/heads/User1935/}
 
+                        - name: 'Install Dependencies'
+                          run: |
+                                mkdir bin
+
+                        - name: 'Install Pre-Commit'
+                          working-directory: bin
+                          continue-on-error: true
+                          run: pip3 install --no-cache-dir pre-commit
+
+                        - name: 'Install Checkov'
+                          working-directory: bin
+                          continue-on-error: true
+                          run: pip3 install --no-cache-dir checkov 
+
+                        - name: 'Install TerraDocs'
+                          working-directory: bin
+                          continue-on-error: true
+                          run: |
+                                curl -L "$(curl -s "https://api.github.com/repos/terraform-docs/terraform-docs/releases"/latest | grep -o -E -m 1 "https://.+?-linux-amd64.tar.gz")" > terraform-docs.tgz \
+                                tar -xzf terraform-docs.tgz terraform-docs && rm terraform-docs.tgz && chmod +x terraform-docs
+
+                        
+                        - name: 'Install TerraGrunt'
+                          working-directory: bin
+                          continue-on-error: true
+                          run: |
+                                curl -L "$(curl -s "https://api.github.com/repos/gruntwork-io/terragrunt/releases/latest" | grep -o -E -m 1 "https://.+?/terragrunt_linux_amd64")" > terragrunt 
+                                chmod +x terragrunt
+
+                        - name: 'Install TerraScan'
+                          working-directory: bin
+                          continue-on-error: true
+                          run: |
+                                curl -L "$(curl -s "https://api.github.com/repos/accurics/terrascan/releases/latest" | grep -o -E -m 1 "https://.+?_Linux_x86_64.tar.gz")" > terrascan.tar.gz 
+                                tar -xzf terrascan.tar.gz terrascan && rm terrascan.tar.gz && 
+                                ./terrascan init
+
+                        - name: 'Install TerraformLint'
+                          working-directory: bin
+                          continue-on-error: true
+                          run: |
+                                curl -L "$(curl -s "https://api.github.com/repos/terraform-linters/tflint/releases/latest" | grep -o -E -m 1 "https://.+?_linux_amd64.zip")" > tflint.zip \
+                                unzip tflint.zip && rm tflint.zip
+
+
+                        - name: 'Install TFSec'
+                          working-directory: bin
+                          continue-on-error: true
+                          run: |
+                                curl -L "$(curl -s "https://api.github.com/repos/aquasecurity/tfsec/releases/latest" | grep -o -E -m 1 "https://.+?/tfsec-linux-amd64")" > tfsec \
+                                chmod +x tfsec
