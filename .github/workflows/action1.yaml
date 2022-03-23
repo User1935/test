@@ -51,7 +51,7 @@ jobs:
                           continue-on-error: true
                           run: |
                                 curl -L "$(curl -s "https://api.github.com/repos/accurics/terrascan/releases/latest" | grep -o -E -m 1 "https://.+?_Linux_x86_64.tar.gz")" > terrascan.tar.gz \
-                                && tar -xzf terrascan.tar.gz terrascan && rm terrascan.tar.gz && 
+                                && tar -xzf terrascan.tar.gz terrascan && rm terrascan.tar.gz \
                                 && ./terrascan init
 
                         - name: 'Install TerraformLint'
@@ -68,3 +68,9 @@ jobs:
                           run: |
                                 curl -L "$(curl -s "https://api.github.com/repos/aquasecurity/tfsec/releases/latest" | grep -o -E -m 1 "https://.+?/tfsec-linux-amd64")" > tfsec \
                                 && chmod +x tfsec
+                        
+                                                
+                        - name: 'Add to PATH'
+                          run: |
+                                echo "${{ github.workspace }}/bin" >> $GITHUB_PATH \
+                                && pre-commit run --all-files
