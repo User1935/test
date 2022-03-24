@@ -77,7 +77,7 @@ jobs:
                         - name: 'Add to PATH'
                           run: |
                                 echo "$WRKDIR" >> $GITHUB_PATH \
-                                export PATH="${PATH}:${{ github.workspace }}/$WRKDIR"
+                                #export PATH="${PATH}:${{ github.workspace }}/$WRKDIR"
                                 echo "$PATH"
                                 echo $(ls)
 
