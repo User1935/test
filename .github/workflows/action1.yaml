@@ -82,6 +82,7 @@ jobs:
                                 echo $(ls)
 
                         - name: 'Pre-Commit'
+                          continue-on-error: true
                           id: pre-commit
                           run: |
                             pre-commit run --all-files | sed 's/\x1b\[[0-9;]*m//g' | tee output.md
