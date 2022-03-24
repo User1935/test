@@ -2,7 +2,7 @@ name: Testing repo
 on: [push, pull_request]
 
 env:
-        WRKDIR: "/home/runner/work/test/test/deps"
+        WRKDIR: "./deps"
 
 jobs:
         bananas:
@@ -75,7 +75,6 @@ jobs:
                         
                                                 
                         - name: 'Add to PATH'
-                          working-directory: $WRKDIR
                           run: |
                                 echo "$WRKDIR" >> $GITHUB_PATH \
                                 #export PATH="${PATH}:${{ github.workspace }}/$WRKDIR/terraform-docs"
