@@ -1,105 +1,25 @@
 name: Testing repo
-on: [push, pull_request]
+on: 
+    push:
+      branches:
+        - "main"
 
 env:
-        WRKDIR: "deps"
+  WRKDIR: "deps"
 
 jobs:
-        bananas:
-                name: 'Checkout'
-                runs-on: ubuntu-latest
-                steps:
-                        - name: 'Checkout'
-                          uses: actions/checkout@v3
-                          with:
-                                ref: main
+  bananas:
+    name: 'Checkout'
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Checkout'
+        uses: actions/checkout@v3
+        with:
+          ref: main
 
-                        - name: 'Print Something'
-                          run: |
-                                echo $(cat derd.txt)
-                                echo $GITHUB_REF_NAME
-                                echo ${GITHUB_REF#refs/heads/User1935/}
-
-                        - name: 'Install Dependencies'
-                          run: |
-                                sudo apt-get install unzip
-                                mkdir $WRKDIR
-
-                        - name: 'Install Pre-Commit'
-                          working-directory: deps
-                          continue-on-error: true
-                          run: pip3 install --no-cache-dir pre-commit
-
-                        - name: 'Install Checkov'
-                          working-directory: deps
-                          continue-on-error: true
-                          run: pip3 install --no-cache-dir checkov 
-
-                        - name: 'Install TerraDocs'
-                          working-directory: deps
-                          continue-on-error: true
-                          run: |
-                                curl -L "$(curl -s "https://api.github.com/repos/terraform-docs/terraform-docs/releases"/latest | grep -o -E -m 1 "https://.+?-linux-amd64.tar.gz")" > terraform-docs.tgz \
-                                && tar -xzf terraform-docs.tgz terraform-docs && rm terraform-docs.tgz && chmod +x terraform-docs
-
-                        
-                        - name: 'Install TerraGrunt'
-                          working-directory: deps
-                          continue-on-error: true
-                          run: |
-                                curl -L "$(curl -s "https://api.github.com/repos/gruntwork-io/terragrunt/releases/latest" | grep -o -E -m 1 "https://.+?/terragrunt_linux_amd64")" > terragrunt \
-                                && chmod +x terragrunt
-
-                        - name: 'Install TerraScan'
-                          working-directory: deps
-                          continue-on-error: true
-                          run: |
-                                curl -L "$(curl -s "https://api.github.com/repos/accurics/terrascan/releases/latest" | grep -o -E -m 1 "https://.+?_Linux_x86_64.tar.gz")" > terrascan.tar.gz \
-                                && tar -xzf terrascan.tar.gz terrascan && rm terrascan.tar.gz \
-                                && ./terrascan init
-
-                        - name: 'Install TerraformLint'
-                          working-directory: deps
-                          continue-on-error: true
-                          run: |
-                                curl -L "$(curl -s "https://api.github.com/repos/terraform-linters/tflint/releases/latest" | grep -o -E -m 1 "https://.+?_linux_amd64.zip")" > tflint.zip \
-                                && unzip tflint.zip && rm tflint.zip
-
-
-                        - name: 'Install TFSec'
-                          working-directory: deps
-                          continue-on-error: true
-                          run: |
-                                curl -L "$(curl -s "https://api.github.com/repos/aquasecurity/tfsec/releases/latest" | grep -o -E -m 1 "https://.+?/tfsec-linux-amd64")" > tfsec \
-                                && chmod +x tfsec
-                        
-                                                
-                        - name: 'Add to PATH'
-                          run: |
-                                echo "$WRKDIR" >> $GITHUB_PATH \
-                                #export PATH="${PATH}:${{ github.workspace }}/$WRKDIR"
-                                echo "$PATH"
-                                echo $(ls)
-
-                        - name: 'Pre-Commit'
-                          continue-on-error: true
-                          id: pre-commit
-                          run: |
-                            pre-commit run --all-files | sed 's/\x1b\[[0-9;]*m//g' | tee output.md
-                            output=$(cat output-md)
-                            output="${output//'%'/'%25'}"
-                            output="${output//$'\n'/'%0A'}"
-                            output="${output//$'\r'/'%0D'}"
-                            echo ::set-output name=pre-commit-output::$output
-                          
-                  
-                        - name: Write output for PR
-                          uses: actions/github-script@v4.1.0
-                          with:
-                            script: |
-                              github.issues.createComment({
-                                issue_number: context.issue.number,
-                                owner: context.repo.owner,
-                                repo: context.repo.repo,
-                                body: \`${{ steps.pre-commit.outputs.pre-commit-output }}\`
-                              })
+      - name: Repository Dispatch
+        uses: peter-evans/repository-dispatch@v2
+        with:
+          token: ${{ secrets.REPO_ACCESS_TOKEN }}
+          event-type: pr-setup
+          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
